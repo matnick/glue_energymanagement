@@ -46,7 +46,7 @@
                      </v-list-tile-content>
                   </v-list-tile>
                </v-list-group>
-               <v-list-tile v-else :key="item.text" :to="{path: item.path}">
+               <v-list-tile v-else v-show="check_access(item.access)" :key="item.text" :to="{path: item.path}">
                   <v-list-tile-action>
                      <v-icon>{{ item.icon }}</v-icon>
                   </v-list-tile-action>
@@ -75,64 +75,98 @@
       <v-content>
          <router-view></router-view>
       </v-content>
+       <loginForm></loginForm>
    </v-app>
 </template>
 
 <script>
-export default {
-  data: () => ({
-    menu_collapsed: true,
-    items: [
-      {
-        path: "dashboard",
-        text: "Dashboard",
-        icon: "fa-tachometer-alt"
-      },
-      {
-        path: "power_quality",
-        text: "Power quality index",
-        icon: "fa-weight"
-      },
-      {
-        path: "phase_current_balance",
-        text: "Phase current balance",
-        icon: "fa-balance-scale"
-      },
-      {
-        path: "scheduled_maintenance",
-        text: "Scheduled maintenance",
-        icon: "fa-clock"
-      },
-      {
-        path: "electrical_shields",
-        text: "Electrical shields status",
-        icon: "fa-bolt"
-      },
-      {
-        path: "problems",
-        text: "Problems and failures",
-        icon: "fa-exclamation-triangle"
-      },
-      {
-        path: "energy_consumption",
-        text: "Energy consumption profiles",
-        icon: "fa-lightbulb"
-      }
-    ]
-  }),
-  methods: {
-    get_expanded_status(path) {
-      if (window.location.href.includes(path)) {
-        return true;
-      }
+    import loginForm from './common/forms/LoginForm.vue'
 
-      return false;
-    },
-    toggle_menu() {
-      this.menu_collapsed = !this.menu_collapsed;
-    }
-  }
-};
+    export default {
+        components: {
+            loginForm,
+        },
+        data() {
+            return {
+                menu_collapsed: true,
+                items: [
+                    {
+                        path: "dashboard",
+                        text: "Dashboard",
+                        icon: "fa-tachometer-alt",
+                        access: "User|Engineer|Supervisor|Guest"
+                    },
+                    {
+                        path: "power_quality",
+                        text: "Power quality index",
+                        icon: "fa-weight",
+                        access: "User|Engineer|Supervisor|Guest"
+                    },
+                    {
+                        path: "phase_current_balance",
+                        text: "Phase current balance",
+                        icon: "fa-balance-scale",
+                        access: "User|Engineer|Supervisor"
+                    },
+                    {
+                        path: "scheduled_maintenance",
+                        text: "Scheduled maintenance",
+                        icon: "fa-clock",
+                        access: "Engineer|Supervisor"
+                    },
+                    {
+                        path: "electrical_shields",
+                        text: "Electrical shields status",
+                        icon: "fa-bolt",
+                        access: "Engineer|Supervisor"
+                    },
+                    {
+                        path: "problems",
+                        text: "Problems and failures",
+                        icon: "fa-exclamation-triangle",
+                        access: "Supervisor"
+                    },
+                    {
+                        path: "energy_consumption",
+                        text: "Energy consumption profiles",
+                        icon: "fa-lightbulb",
+                        access: "User|Engineer|Supervisor"
+                    }
+                ]
+            }
+        },
+        methods: {
+            get_expanded_status(path) {
+                if (window.location.href.includes(path)) {
+                    return true;
+                }
+
+                return false;
+            },
+            check_access (access_field) {
+                if (access_field.indexOf(this.getUserRole)!==-1){
+                    return true
+                }
+                else {
+                    return false;
+                }
+            },
+            toggle_menu() {
+                this.menu_collapsed = !this.menu_collapsed;
+            },
+            logout() {
+                this.$store.dispatch("logout");
+            }
+        },
+        computed: {
+            getUserRole () {
+                return this.$store.getters.getUserRole;
+            },
+            isLoggedIn () {
+                return this.$store.getters.isLoggedIn;
+            }
+        }
+    };
 </script>
 
 <style>
