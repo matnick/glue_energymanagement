@@ -56,7 +56,7 @@ Vue.use(Vuetify, {
    }
 })
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
    routes: [{
@@ -84,10 +84,65 @@ const router = new VueRouter({
       path: '*',
       redirect: '/dashboard'
    }]
-})
+});
+
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
+const LOGIN = "LOGIN";
+const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+const LOGOUT = "LOGOUT";
+
+const store = new Vuex.Store({
+    state: {
+        isLoggedIn: !!localStorage.getItem("token"),
+        authorizedRole: localStorage.getItem("authorizedRole")
+    },
+    mutations: {
+        [LOGIN] (state) {
+            state.pending = true;
+        },
+        [LOGIN_SUCCESS] (state) {
+            state.isLoggedIn = true;
+            state.pending = false;
+            state.authorizedRole = localStorage.getItem("authorizedRole")
+        },
+        [LOGOUT](state) {
+            state.isLoggedIn = false;
+            state.authorizedRole = "Guest";
+        }
+    },
+    actions: {
+        login({ commit }, role) {
+            commit(LOGIN);
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    localStorage.setItem("token", "JWT");
+                    localStorage.setItem("authorizedRole", role);
+                    commit(LOGIN_SUCCESS);
+                    resolve();
+                }, 1000);
+            });
+        },
+        logout({ commit }) {
+            localStorage.removeItem("token");
+            localStorage.setItem("authorizedRole", "Guest");
+            commit(LOGOUT);
+        }
+    },
+    getters: {
+        isLoggedIn: state => {
+            return state.isLoggedIn
+        },
+        getUserRole: state => {
+            return state.authorizedRole
+        }
+    }
+});
 
 new Vue({
    el: '#app',
    router,
+   store,
    render: h => h(main_page)
 })

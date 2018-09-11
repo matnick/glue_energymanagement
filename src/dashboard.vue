@@ -3,7 +3,7 @@
       <v-layout column>
          <v-flex d-flex md6>
             <v-layout class="fix-layout" row wrap>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(power_quality.access)">
                   <v-card :color="power_quality.color" to="/power_quality">
                      <div class="chart-background">
                         <bar-chart :data="power_quality.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -26,7 +26,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(phase_current_balance.access)">
                   <v-card class="phase-card" :color="phase_current_balance.color" to="/phase_current_balance">
                      <div class="voltage-background">
                         <voltage-chart :value="phase_current_balance.line_l1" line="L1"></voltage-chart>
@@ -39,7 +39,7 @@
                      </v-card-title>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(scheduled_maintenance.access)">
                   <v-card :color="scheduled_maintenance.color" to="/scheduled_maintenance">
                      <v-card-title primary class="title">Scheduled maintenance
                         <v-spacer></v-spacer>
@@ -63,7 +63,7 @@
          </v-flex>
          <v-flex d-flex md6>
             <v-layout class="fix-layout" row wrap>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(electrical_shields.access)">
                   <v-card :color="electrical_shields.color" to="/electrical_shields">
                      <div class="chart-background">
                         <bar-chart :data="electrical_shields.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -80,7 +80,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(problems.access)">
                   <v-card :color="problems.color" to="/problems">
                      <v-card-title primary class="title">Problems and failures
                         <v-spacer></v-spacer>
@@ -96,7 +96,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4>
+               <v-flex d-flex md4 v-if="check_access(energy_consumption.access)">
                   <v-card :color="energy_consumption.color" to="/energy_consumption">
                      <div class="chart-background">
                         <bar-chart :data="energy_consumption.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -135,6 +135,7 @@ export default {
   data: () => ({
     power_quality: {
       color: "nokia_red",
+      access: "User|Engineer|Supervisor|Guest",
       chartData: [
         { title: "5 июля", value: 1 },
         { title: "6 июля", value: 2 },
@@ -146,15 +147,18 @@ export default {
       ]
     },
     phase_current_balance: {
+      access: "User|Engineer|Supervisor",
       color: "nokia_green",
       line_l1: 240,
       line_l2: 236,
       line_l3: 238
     },
     scheduled_maintenance: {
+      access: "Engineer|Supervisor",
       color: "nokia_green"
     },
     electrical_shields: {
+      access: "Engineer|Supervisor",
       color: "nokia_green",
       chartData: [
         { title: "5 июля", value: 1 },
@@ -167,9 +171,11 @@ export default {
       ]
     },
     problems: {
+      access: "Supervisor",
       color: "nokia_yellow"
     },
     energy_consumption: {
+      access: "User|Engineer|Supervisor",
       color: "nokia_green",
       chartData: [
         { title: "5 июля", value: 1 },
@@ -181,17 +187,37 @@ export default {
         { title: "11 июля", value: 3 }
       ]
     }
-  })
+  }),
+    methods: {
+      check_access (access_field) {
+          if (access_field.indexOf(this.getUserRole)!==-1){
+              return true
+          }
+          else {
+              return false;
+          }
+      }
+    },
+    computed: {
+        getUserRole () {
+            return this.$store.getters.getUserRole;
+        },
+        isLoggedIn () {
+            return this.$store.getters.isLoggedIn;
+        }
+    }
 };
 </script>
 
 <style>
 .container.fill-height .layout.fix-layout {
   height: calc(100% + 8px);
+  min-height:300px;
 }
 
 .container.fill-height .layout.fix-layout-large {
   height: calc(100% + 16px);
+  min-height:300px;
 }
 
 .move-top {
