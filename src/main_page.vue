@@ -68,6 +68,7 @@
             </v-toolbar-title>
          </v-menu>
          <v-spacer></v-spacer>
+         <loginForm></loginForm>
          <v-toolbar-items class="hidden-sm-and-down powered">
             <div class="title" >Powered by IMPACT</div>
          </v-toolbar-items>
@@ -75,7 +76,6 @@
       <v-content>
          <router-view></router-view>
       </v-content>
-       <loginForm></loginForm>
    </v-app>
 </template>
 
@@ -94,13 +94,13 @@
                         path: "dashboard",
                         text: "Dashboard",
                         icon: "fa-tachometer-alt",
-                        access: "User|Engineer|Supervisor|Guest"
+                        access: "User|Engineer|Supervisor"
                     },
                     {
                         path: "power_quality",
                         text: "Power quality index",
                         icon: "fa-weight",
-                        access: "User|Engineer|Supervisor|Guest"
+                        access: "User|Engineer|Supervisor"
                     },
                     {
                         path: "phase_current_balance",
