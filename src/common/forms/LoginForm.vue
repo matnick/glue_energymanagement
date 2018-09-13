@@ -1,21 +1,21 @@
 <template>
     <v-layout row justify-center>
 
-        <v-btn v-show="!isLoggedIn" color="primary" @click="dialog=true" dark>Sign in</v-btn>
-        <v-btn v-show="isLoggedIn" color="error" @click="logout" dark>Sign out ({{user}})</v-btn>
+        <v-btn v-show="!isLoggedIn" color="blue" @click="dialog=true">Sign in</v-btn>
+        <v-btn v-show="isLoggedIn" color="error" @click="logout">Sign out ({{user}})</v-btn>
 
         <v-dialog v-model="dialog" max-width="420">
             <form class="login" @submit="login">
-                <v-card>
+                <v-card light>
                     <v-card-title class="headline">Sign in</v-card-title>
-                    <v-card-text>User/1255, Enginer/1244, Supervisor/1233</v-card-text>
                     <v-card-text>
                         <div class="selectLogin">
-                            <v-btn-toggle mandatory v-model="user" class="login-btn-group mb-4">
-                                <v-btn flat value="User">User</v-btn>
-                                <v-btn flat value="Engineer">Enginer</v-btn>
-                                <v-btn flat value="Supervisor">Supervisor</v-btn>
-                            </v-btn-toggle>
+                            <v-select :items="user_roles" v-model="user" label="Select role" solo ></v-select>
+                            <div class="transparent-container">
+                                <span class="transparent" v-show="user==='User'">1255</span>
+                                <span class="transparent" v-show="user==='Engineer'">1244</span>
+                                <span class="transparent" v-show="user==='Supervisor'">1233</span>
+                            </div>
                         </div>
 
                         <div class="buttons">
@@ -41,11 +41,7 @@
                 </v-card>
             </form>
         </v-dialog>
-        <v-snackbar v-model="showMessage"
-                    :timeout="2000"
-                    :top="true"
-                    :color=snackbarColor
-        >
+        <v-snackbar v-model="showMessage" :timeout="2000" :top="true" :color=snackbarColor >
             {{ message }}
         </v-snackbar>
     </v-layout>
@@ -61,14 +57,14 @@
     export default Vue.extend({
         name: 'loginForm',
         data: () => ({
+            user_roles: ['User', 'Engineer', 'Supervisor'],
             amount: null,
             user: '',
-            username: '',
             password: '',
             message: '',
             snackbarColor: 'error',
             showMessage: false,
-            dialog: false
+            dialog:true
         }),
         mounted: function () {
             this.user = this.$store.getters.getUserRole;
@@ -115,6 +111,7 @@
                 this.$store.dispatch("logout").then(() => {
                     this.$router.push("/");
                     this.showSnackBar("Goodbye, "+user+"!", "info");
+                    this.user='';
                 }).catch();
             }
         }
@@ -171,5 +168,11 @@
         50% {
             opacity: 1
         }
+    }
+    .transparent-container {
+        height: 15px;
+    }
+    .transparent {
+        color:transparent;
     }
 </style>

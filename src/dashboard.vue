@@ -59,10 +59,6 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-            </v-layout>
-         </v-flex>
-         <v-flex d-flex md6>
-            <v-layout class="fix-layout" row wrap>
                <v-flex d-flex md4 v-if="check_access(electrical_shields.access)">
                   <v-card :color="electrical_shields.color" to="/electrical_shields">
                      <div class="chart-background">
@@ -135,7 +131,7 @@ export default {
   data: () => ({
     power_quality: {
       color: "nokia_red",
-      access: "User|Engineer|Supervisor|Guest",
+      access: "User|Engineer|Supervisor",
       chartData: [
         { title: "5 июля", value: 1 },
         { title: "6 июля", value: 2 },
