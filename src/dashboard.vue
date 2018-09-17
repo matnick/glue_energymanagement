@@ -1,7 +1,7 @@
 <template>
    <v-container grid-list-md fill-height fluid>
             <v-layout class="fix-layout" row wrap>
-               <v-flex d-flex md4 v-if="check_access(power_quality.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(power_quality.access)">
                   <v-card :color="power_quality.color" to="/power_quality">
                      <div class="chart-background">
                         <bar-chart :data="power_quality.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -24,7 +24,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4 v-if="check_access(phase_current_balance.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(phase_current_balance.access)">
                   <v-card class="phase-card" :color="phase_current_balance.color" to="/phase_current_balance">
                      <div class="voltage-background">
                         <voltage-chart :value="phase_current_balance.line_l1" line="L1"></voltage-chart>
@@ -37,7 +37,7 @@
                      </v-card-title>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4 v-if="check_access(scheduled_maintenance.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(scheduled_maintenance.access)">
                   <v-card :color="scheduled_maintenance.color" to="/scheduled_maintenance">
                      <v-card-title primary class="title">Scheduled maintenance
                         <v-spacer></v-spacer>
@@ -57,7 +57,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4 v-if="check_access(electrical_shields.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(electrical_shields.access)">
                   <v-card :color="electrical_shields.color" to="/electrical_shields">
                      <div class="chart-background">
                         <bar-chart :data="electrical_shields.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -74,7 +74,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4 v-if="check_access(problems.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(problems.access)">
                   <v-card :color="problems.color" to="/problems">
                      <v-card-title primary class="title">Problems and failures
                         <v-spacer></v-spacer>
@@ -90,7 +90,7 @@
                      </v-card-text>
                   </v-card>
                </v-flex>
-               <v-flex d-flex md4 v-if="check_access(energy_consumption.access)">
+               <v-flex class="flex-inner" d-flex md4 v-if="check_access(energy_consumption.access)">
                   <v-card :color="energy_consumption.color" to="/energy_consumption">
                      <div class="chart-background">
                         <bar-chart :data="energy_consumption.chartData" :hideAxis="true" :isDashboard="true"></bar-chart>
@@ -202,7 +202,8 @@ export default {
 </script>
 
 <style>
-.container.fill-height .layout.fix-layout {
+
+ .container.fill-height .layout.fix-layout {
   height: calc(100% + 8px);
   min-height:300px;
 }
@@ -212,7 +213,16 @@ export default {
   min-height:300px;
 }
 
-.move-top {
+ .container.fill-height {
+    align-items: flex-start;
+ }
+
+ .flex-inner {
+    max-height:50%;
+ }
+
+
+ .move-top {
   margin-top: -8px;
 }
 
