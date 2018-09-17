@@ -1,7 +1,5 @@
 <template>
    <v-container grid-list-md fill-height fluid>
-      <v-layout column>
-         <v-flex d-flex md6>
             <v-layout class="fix-layout" row wrap>
                <v-flex d-flex md4 v-if="check_access(power_quality.access)">
                   <v-card :color="power_quality.color" to="/power_quality">
@@ -109,8 +107,6 @@
                   </v-card>
                </v-flex>
             </v-layout>
-         </v-flex>
-      </v-layout>
    </v-container>
 </template>
 
